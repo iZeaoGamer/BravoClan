@@ -25,13 +25,13 @@ class EventListener implements Listener{
         if (!array_key_exists(strtolower($player->getName()), $this->plugin->getClans()->chat)) return;
         $msg = $event->getMessage();
         $event->setCancelled(true);
-        $clan = $this-<plugin->getClans()->getClan($this->plugin->getClans()->chat[strtolower($player->getName())]);
+        $clan = $this->plugin->getDatabase()->getClan($this->plugin->getClans()->chat[strtolower($player->getName())]);
         $minfo = $this->plugin->getDatabase()->getMember(strtolower($player->getName()));
         if (!$this->plugin->getDatabase()->isInClan(strtolower($player->getName())) or $clan['clan'] !== $minfo['clan']){
             unset($this-<plugin->getClans()->chat[strtolower($player->getName())]);
             return;
         }
-        $members = Main::$file->clanMembers($clan['clan']);
+        $members = $this->plugin->getDatabase()->clanMembers($clan['clan']);
         foreach ($members as $member) {
             if ($this->plugin->isOnline($member)) {
                 $getm = Server::getInstance()->getPlayer($member);
@@ -45,8 +45,8 @@ class EventListener implements Listener{
             $player = $event->getEntity();
             $hitter = $event->getDamager();
             if ($player instanceof Player && $hitter instanceof Player){
-                if (Main::$file->isInClan(strtolower($player->getname())) && Main::$file->isInClan(strtolower($hitter->getname()))) {
-                    if (Main::$clan->player[strtolower($player->getName())] === Main::$clan->player[strtolower($hitter->getName())]) {
+                if ($this->plugin->getDatabase()->isInClan(strtolower($player->getname())) && $this->plugin->getDatabase()->isInClan(strtolower($hitter->getname()))) {
+                    if ($this->plugin->getClans()->player[strtolower($player->getName())] === $this->plugin->getClans()->player[strtolower($hitter->getName())]) {
                         $event->setCancelled(true);
                     }
                 }
@@ -55,15 +55,15 @@ class EventListener implements Listener{
     }
     public function onJoin(PlayerJoinEvent $event){
         $player = $event->getPlayer();
-        if (Main::$file->isInClan(strtolower($player->getname()))){
-            $clan = Main::$file->getClan(Main::$file->getMember(strtolower($player->getName()))['clan']);
-            Main::$clan->player[strtolower($player->getName())] = $clan["clan"];
+        if ($this->plugin->getDatabase()->isInClan(strtolower($player->getname()))){
+            $clan = $this->plugin->getDatabase()->getClan($this->plugin->getDatabase()->getMember(strtolower($player->getName()))['clan']);
+            $this->plugin->getClans()->player[strtolower($player->getName())] = $clan["clan"];
         }
     }
     public function onLeave(PlayerQuitEvent $event){
         $player = $event->getPlayer();
-        if (Main::$file->isInClan(strtolower($player->getname()))) {
-            unset(Main::$clan->player[strtolower($player->getName())]);
+        if ($this->plugin->getDatabase()->isInClan(strtolower($player->getname()))) {
+            unset($this->plugin->getClans()->player[strtolower($player->getName())]);
         }
     }
     public function onKill(PlayerDeathEvent $event){
@@ -73,13 +73,13 @@ class EventListener implements Listener{
             if ($cause instanceof EntityDamageByEntityEvent) {
                 $killer = $cause->getDamager();
                 if ($killer instanceof Player) {
-                    if (Main::$file->isInClan(strtolower($player->getname()))) {
-                        $clan = Main::$file->getClan(Main::$clan->player[strtolower($killer->getName())]);
-                        Main::$clan->onClanMemberKill($clan, $killer);
+                    if ($this->plugin->getDatabase()->isInClan(strtolower($player->getname()))) {
+                        $clan = $this->plugin->getDatabase()->getClan($this->plugin->getClans()->player[strtolower($killer->getName())]);
+                        $this->plugin->getClans()->onClanMemberKill($clan, $killer);
                     }
-                    if (Main::$file->isInClan(strtolower($killer->getname()))) {
-                        $clan = Main::$file->getClan(Main::$clan->player[strtolower($player->getName())]);
-                        Main::$clan->onClanMemberDeath($clan, $player);
+                    if ($this->plugin->getDatabase()->isInClan(strtolower($killer->getname()))) {
+                        $clan = $this->plugin->getDatabase()->getClan($this->plugin->getClans()->player[strtolower($player->getName())]);
+                        $this->plugin->getClans()->onClanMemberDeath($clan, $player);
                     }
                 }
             }
