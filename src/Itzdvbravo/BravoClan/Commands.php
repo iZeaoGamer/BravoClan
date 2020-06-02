@@ -241,7 +241,7 @@ class Commands{
                         }
                         break;
                     case "top":
-                        $top = Main::$db->query("SELECT clan FROM clans ORDER BY level DESC LIMIT 10");
+                        $top = $this->plugin->getData()->query("SELECT clan FROM clans ORDER BY level DESC LIMIT 10");
                         $counter = 0;
                         $player->sendMessage("§e+=TOP 10 Gangs=+");
                         while ($resultAr = $top->fetchArray(SQLITE3_ASSOC)) {
