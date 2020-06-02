@@ -22,13 +22,13 @@ class EventListener implements Listener{
     }
     public function onChat(PlayerChatEvent $event){
         $player = $event->getPlayer();
-        if (!array_key_exists(strtolower($player->getName()), Main::$clan->chat)) return;
+        if (!array_key_exists(strtolower($player->getName()), $this->plugin->getClans()->chat)) return;
         $msg = $event->getMessage();
         $event->setCancelled(true);
-        $clan = Main::$file->getClan(Main::$clan->chat[strtolower($player->getName())]);
-        $minfo = Main::$file->getMember(strtolower($player->getName()));
-        if (!Main::$file->isInClan(strtolower($player->getName())) or $clan['clan'] !== $minfo['clan']){
-            unset(Main::$clan->chat[strtolower($player->getName())]);
+        $clan = $this-<plugin->getClans()->getClan($this->plugin->getClans()->chat[strtolower($player->getName())]);
+        $minfo = $this->plugin->getDatabase()->getMember(strtolower($player->getName()));
+        if (!$this->plugin->getDatabase()->isInClan(strtolower($player->getName())) or $clan['clan'] !== $minfo['clan']){
+            unset($this-<plugin->getClans()->chat[strtolower($player->getName())]);
             return;
         }
         $members = Main::$file->clanMembers($clan['clan']);
