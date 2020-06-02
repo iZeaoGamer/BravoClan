@@ -28,15 +28,25 @@ class Main extends PluginBase{
         Main::$cmd->command($player, $cmd, $label, $args);
         return true;
     }
+    public function getDatabase(): Database{
+return self::$file;
+    }
+public function getClans(): Clan{
+return self::$clan;
+}
+public function getCommand(): Commands{
+return self::$cmd;
+}
     public function isOnline($string):bool {
-        $player = Server::getInstance()->getPlayer($string);
+        $player = Server::getInstance()->getPlayer($string);;
+
         if ($player === Null){
             return false;
         } else {
             return true;
         }
     }
-    public function getPlayerByString($string){
+    public function getPlayerToString($string){
         return Server::getInstance()->getPlayer($string);
     }
     public function config(){
