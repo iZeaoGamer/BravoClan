@@ -28,6 +28,9 @@ class Main extends PluginBase{
         Main::$cmd->command($player, $cmd, $label, $args);
         return true;
     }
+    public function getData(): \SQLite3{
+return self::$db;
+    }
     public function getDatabase(): Database{
 return self::$file;
     }
